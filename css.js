@@ -17,12 +17,12 @@
  * Chome 3 - 26
  * Firefox 3.5 - 19
  * Opera 10 - 12
- * 
+ *
  * browserling.com used for virtual testing environment
  *
  * Credit to B Cavalier & J Hann for the IE 6 - 9 method,
  * refined with help from Martin Cermak
- * 
+ *
  * Sources that helped along the way:
  * - https://developer.mozilla.org/en-US/docs/Browser_detection_using_the_user_agent
  * - http://www.phpied.com/when-is-a-stylesheet-really-loaded/
@@ -41,7 +41,7 @@ define(function() {
 
   // use <style> @import load method (IE < 9, Firefox < 18)
   var useImportLoad = false;
-  
+
   // set to false for explicit <link> load checking when onload doesn't work perfectly (webkit)
   var useOnload = true;
 
@@ -72,11 +72,11 @@ define(function() {
   var ieCnt = 0;
   var ieLoads = [];
   var ieCurCallback;
-  
+
   var createIeLoad = function(url) {
     curSheet.addImport(url);
     curStyle.onload = function(){ processIeLoad() };
-    
+
     ieCnt++;
     if (ieCnt == 31) {
       createStyle();
@@ -85,14 +85,14 @@ define(function() {
   }
   var processIeLoad = function() {
     ieCurCallback();
- 
+
     var nextLoad = ieLoads.shift();
- 
+
     if (!nextLoad) {
       ieCurCallback = null;
       return;
     }
- 
+
     ieCurCallback = nextLoad[1];
     createIeLoad(nextLoad[0]);
   }
@@ -159,8 +159,11 @@ define(function() {
 
 //>>excludeStart('excludeRequireCss', pragmas.excludeRequireCss)
   cssAPI.load = function(cssId, req, load, config) {
+    var cssPath = cssId + '.css',
+        maybeMappedPath = config.paths[cssPath];
+    if (maybeMappedPath) cssPath = maybeMappedPath;
 
-    (useImportLoad ? importLoad : linkLoad)(req.toUrl(cssId + '.css'), load);
+    (useImportLoad ? importLoad : linkLoad)(req.toUrl(cssPath), load);
 
   }
 
